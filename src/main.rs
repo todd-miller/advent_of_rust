@@ -33,7 +33,6 @@ fn main() {
     let top_elf = elf_totals.iter().max().unwrap();
     // need to sum the first three items in the vec elf_totals
     println!("Most Calories held: {}", top_elf);
-    println!("Calories held by top three elves {}", top_elves);
-    
+    println!("Calories held by top three elves {}", top_elves); 
 }
 
