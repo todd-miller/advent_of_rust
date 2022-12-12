@@ -32,6 +32,8 @@ pub fn day1() {
     let top_elves = elf_totals.to_vec().drain(..3).sum::<i32>(); 
     let top_elf = elf_totals.iter().max().unwrap();
 
-    println!("Most Calories held: {}", top_elf);
-    println!("Calories held by top three elves {}", top_elves); 
+    println!("=============== DAY 1 =========================");
+    println!("\tMost Calories held: {}", top_elf);
+    println!("\tCalories held by top three elves {}", top_elves); 
+    println!("===============================================");
 }
