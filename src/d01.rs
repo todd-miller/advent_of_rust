@@ -25,7 +25,7 @@ pub fn day1() {
     let top_elf = elf_totals.iter().max().unwrap();
 
     println!("=============== DAY 1 =========================");
-    println!("\tMost Calories held: {}", top_elf);
-    println!("\tCalories held by top three elves {}", top_elves); 
+    println!("\n\tPART 1 - CALORIES: {}\n", top_elf);
+    println!("\n\tPART 2 - CALORIES: {}\n", top_elves); 
     println!("===============================================");
 }
