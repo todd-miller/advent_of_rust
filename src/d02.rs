@@ -9,7 +9,23 @@ const ROCK: i32 = 1;
 const PAPER: i32 = 2;
 const SCISSORS: i32 = 3;
 
-fn calculator(games: Vec<String>) -> i32 {
+
+fn evaluate_round(elf:i32, usr: i32) -> i32 {
+    let mut score: i32 = 0;
+    if elf == usr {
+        score = score + TIE;
+    } else {
+        if (elf == ROCK && usr == PAPER) || (elf == PAPER && usr == SCISSORS) || (elf == SCISSORS && usr == ROCK) {
+            score = score + WIN;
+        } else {
+            score = score + LOSS;
+        }
+    }
+    score = score + usr;
+    return score;
+}
+
+fn parse_moves(round: &str) -> (i32, i32) {
     let map: HashMap<&str, i32> = HashMap::from([
         ("A", ROCK),
         ("B", PAPER),
@@ -18,26 +34,17 @@ fn calculator(games: Vec<String>) -> i32 {
         ("Y", PAPER),
         ("Z", SCISSORS),
     ]);
-     
+    let mut moves: std::str::SplitWhitespace = round.split_whitespace();
+    let (elf_code, user_code) = (moves.next().unwrap(), moves.next().unwrap() );  
+    return (map[elf_code], map[user_code]);
+}
+
+fn calculator(games: Vec<String>) -> i32 {
     let mut score: i32 = 0;
     for game in games {
-        let mut round: std::str::SplitWhitespace = game.split_whitespace();
-        let (elf_code, user_code) = (round.next().unwrap(), round.next().unwrap() );  
-        let elf = map[elf_code];
-        let usr = map[user_code];
-
-        if elf == usr {
-            score = score + TIE; 
-        } else {
-            if (elf == ROCK && usr == PAPER) || (elf == PAPER && usr == SCISSORS) || (elf == SCISSORS && usr == ROCK) {
-                score = score + WIN;
-            } else {
-                score = score + LOSS;
-            }
-        }
-        score = score + usr;
+        let (elf, user) = parse_moves(&game);
+        score = score + evaluate_round(elf, user);
     }
-
     score
 }
 
@@ -51,9 +58,3 @@ pub fn day2() {
     println!("===============================================");
 }
 
-
-// maybe i should write a test?
-// i know i need to store some stuff
-// X - rock
-// Y - paper
-// Z - scissors 
