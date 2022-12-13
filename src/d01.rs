@@ -1,12 +1,4 @@
-use std::{
-    fs::File,
-    io::{self, BufRead, BufReader},
-    path::Path,
-};
-
-fn lines_from_file(filename: impl AsRef<Path>) -> io::Result<Vec<String>> {
-    BufReader::new(File::open(filename)?).lines().collect()
-}
+use crate::utils::*;
 
 fn calculator(content: Vec<String>) -> Vec<i32> {
     let mut totals = vec![];
