@@ -1,116 +1,46 @@
-use crate::utils::*;
-use std::collections::HashMap;
-use std::str::SplitWhitespace;
+fn part1(l: i8, r: i8) -> u32 {
+    let elf = l;
+    let usr = r;
+    let result = (usr - elf + 1).rem_euclid(3);
 
-const TIE_VALUE: i32 = 3;
-const WIN_VALUE: i32 = 6;
-const LOSS_VALUE: i32 = 0;
-
-const TIE: &str = "TIE";
-const WIN: &str = "WIN";
-const LOSS: &str = "LOSS";
-
-const ROCK: i32 = 1;
-const PAPER: i32 = 2;
-const SCISSORS: i32 = 3;
-
-fn p1_round(elf:i32, usr: i32) -> i32 {
-    let mut score: i32 = 0;
-    if elf == usr {
-        score = score + TIE_VALUE;
-    } else {
-        if (elf == ROCK && usr == PAPER) || (elf == PAPER && usr == SCISSORS) || (elf == SCISSORS && usr == ROCK) {
-            score = score + WIN_VALUE;
-        } else {
-            score = score + LOSS_VALUE;
-        }
-    }
-    score = score + usr;
-    return score;
+    let shape_score = usr + 1;
+    let result_score = 3 * result;
+    (shape_score + result_score) as u32
 }
 
-fn p2_round(elf:i32, usr: &str) -> i32 {
-    let mut score: i32 = 0;
-    
-    if usr == TIE {
-        score = score + TIE_VALUE;
-        score = score + elf;
-    } else if usr == WIN {
-        score = score + WIN_VALUE;
-        if elf == PAPER {
-            score = score + SCISSORS;
-        } else if elf == ROCK {
-            score = score + PAPER;
-        } else if elf == SCISSORS {
-            score = score + ROCK;
-        }
-    } else if usr == LOSS {
-        score = score + LOSS_VALUE;
-         if elf == PAPER {
-            score = score + ROCK;
-        } else if elf == ROCK {
-            score = score + SCISSORS;
-        } else if elf == SCISSORS {
-            score = score + PAPER;
-        }
-    }
-    return score;
-}
- 
-fn p1_moves(round: &str) -> (i32, i32) {
-    let map: HashMap<&str, i32> = HashMap::from([
-        ("A", ROCK),
-        ("B", PAPER),
-        ("C", SCISSORS),
-        ("X", ROCK),
-        ("Y", PAPER),
-        ("Z", SCISSORS),
-    ]);
-    let mut moves: SplitWhitespace = round.split_whitespace();
-    let (elf_code, user_code) = (moves.next().unwrap(), moves.next().unwrap() );  
-    return (map[elf_code], map[user_code]);
+fn part2(l: i8, r: i8) -> u32 {
+    let elf = l;
+    let result = r;
+    let usr = ( elf - 1 + result).rem_euclid(3);
+
+    let shape_score = usr + 1;
+    let result_score = 3* result;
+    (shape_score + result_score) as u32
 }
 
-fn p2_moves(round: &str) -> (i32, &str) {
-    let map1: HashMap<&str, i32> = HashMap::from([
-        ("A", ROCK),
-        ("B", PAPER),
-        ("C", SCISSORS),
-    ]);
-    let map2: HashMap<&str, &str> = HashMap::from([
-        ("X", LOSS),
-        ("Y", TIE),
-        ("Z", WIN),
-
-    ]); 
-    let mut moves: SplitWhitespace = round.split_whitespace();
-    let (elf_code, user_code) = (moves.next().unwrap(), moves.next().unwrap() );  
-    return (map1[elf_code], map2[user_code]);
+fn parser(s: &str) -> (i8, i8) {
+    let bytes = s.as_bytes();
+    let left = (bytes[0] - b'A') as i8;
+    let right = (bytes[2] - b'X') as i8;
+    return (left, right);
 }
 
-
-fn p1_calc(games: &Vec<String>) -> i32 {
-    let mut score: i32 = 0;
-    for game in games {
-        let (elf, user) = p1_moves(&game);
-        score = score + p1_round(elf, user);
-    }
-    score
-}
-
-fn p2_calc(games: &Vec<String>) -> i32 {
-    let mut score: i32 = 0;
-    for game in games {
-        let (elf, user) = p2_moves(&game);
-        score = score + p2_round(elf, user);
-    }
-    score
+fn calculator(strategy: fn(l: i8, r:i8) -> u32) -> String {
+    let input = std::fs::read_to_string("inputs/02/input.txt").unwrap();
+    input
+        .lines()
+        // map every line to the score for that round
+        .map(|round| {
+            let (left, right) = parser(round);
+            strategy(left, right)
+        })
+        .sum::<u32>()
+        .to_string()   
 }
 
 pub fn day2() {
-    let games = lines_from_file("inputs/02/input.txt").expect("could not read file");
-    let score_1 = p1_calc(&games); 
-    let score_2 = p2_calc(&games); 
+    let score_1 = calculator(part1);
+    let score_2 = calculator(part2); 
     
     println!("=============== DAY 2 =========================");
     println!("\n \t PART 1 - SCORE: {} \n", score_1);
@@ -118,3 +48,45 @@ pub fn day2() {
     println!("===============================================");
 }
 
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_parser() {
+        assert_eq!(parser("A X"), (0 as i8, 0 as i8));
+        assert_eq!(parser("A Y"), (0 as i8, 1 as i8));
+        assert_eq!(parser("A Z"), (0 as i8, 2 as i8));
+        assert_eq!(parser("B Z"), (1 as i8, 2 as i8));
+        assert_eq!(parser("C Z"), (2 as i8, 2 as i8));
+    }
+    #[test]
+    fn test_part1() {
+        // ROCK vs. ROCK as a TIE
+        assert_eq!(part1(0 as i8, 0 as i8), 4 as u32);
+
+        // ROCK vs. PAPER as a WIN 
+        assert_eq!(part1(0 as i8, 1 as i8), 8 as u32);
+        
+        // ROCK vs. SCISSORS as a LOSS  
+        assert_eq!(part1(0 as i8, 2 as i8), 3 as u32);
+       
+        // SCISSORS vs. ROCK as a WIN
+        assert_eq!(part1(2 as i8, 0 as i8), 7 as u32);
+    }
+
+    #[test]
+    fn test_part2() {
+        // ROCK and TIE with ROCK
+        assert_eq!(part2(0 as i8, 1 as i8), 4 as u32); 
+
+        // ROCK and WIN with PAPER
+        assert_eq!(part2(0 as i8, 2 as i8), 8 as u32); 
+
+        // ROCK and LOSS with SCISSORS 
+        assert_eq!(part2(0 as i8, 0 as i8), 3 as u32); 
+
+        // PAPER and WIN with SCISSORS  
+        assert_eq!(part2(1 as i8, 2 as i8), 9 as u32); 
+    }
+}
