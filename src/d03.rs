@@ -27,33 +27,33 @@ fn create_map() -> HashMap<char, i32> {
         .for_each(|(c, i)| {
            map.insert(c, i);
         });
-    return map;
+    map
 }
 
-fn part1(input: &String, map: &HashMap<char, i32>) -> i32 {
+fn part1(input: &str, map: &HashMap<char, i32>) -> i32 {
     let mut priority = 0;
     for line in input.lines() {
         let (left, right) = line.split_at(line.len() / 2);
         for item in left.chars() {
             if right.contains(item) {
-                priority = priority + *map.get(&item).unwrap();
+                priority += *map.get(&item).unwrap();
                 break;
             }
         }
     }
-    return priority;
+    priority
 }
 
-fn part2(input: &String, map: &HashMap<char, i32>) -> i32 {
+fn part2(input: &str, map: &HashMap<char, i32>) -> i32 {
     let mut badge_priority = 0;
     for (index, _ ) in input.lines().enumerate().step_by(3) {
         let badge = get_badge(index, input);
-        badge_priority = badge_priority + map.get(&badge).unwrap();
+        badge_priority += map.get(&badge).unwrap();
     } 
     badge_priority 
 }
 
-fn get_badge(index: usize, input: &String) -> char {
+fn get_badge(index: usize, input: &str) -> char {
     let l1 = input.lines().nth(index).unwrap(); 
     let l2 = input.lines().nth(index+1).unwrap(); 
     let l3 = input.lines().nth(index+2).unwrap(); 
@@ -65,7 +65,7 @@ fn get_badge(index: usize, input: &String) -> char {
             break;
         }
     } 
-    return badge;
+    badge
 }
 
 #[cfg(test)]
