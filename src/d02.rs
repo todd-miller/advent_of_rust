@@ -22,7 +22,7 @@ fn parser(s: &str) -> (i8, i8) {
     let bytes = s.as_bytes();
     let left = (bytes[0] - b'A') as i8;
     let right = (bytes[2] - b'X') as i8;
-    return (left, right);
+    (left, right)
 }
 
 fn calculator(strategy: fn(l: i8, r:i8) -> u32) -> String {
@@ -54,39 +54,39 @@ mod tests {
 
     #[test]
     fn test_parser() {
-        assert_eq!(parser("A X"), (0 as i8, 0 as i8));
-        assert_eq!(parser("A Y"), (0 as i8, 1 as i8));
-        assert_eq!(parser("A Z"), (0 as i8, 2 as i8));
-        assert_eq!(parser("B Z"), (1 as i8, 2 as i8));
-        assert_eq!(parser("C Z"), (2 as i8, 2 as i8));
+        assert_eq!(parser("A X"), (0, 0));
+        assert_eq!(parser("A Y"), (0, 1));
+        assert_eq!(parser("A Z"), (0, 2));
+        assert_eq!(parser("B Z"), (1, 2));
+        assert_eq!(parser("C Z"), (2, 2));
     }
     #[test]
     fn test_part1() {
         // ROCK vs. ROCK as a TIE
-        assert_eq!(part1(0 as i8, 0 as i8), 4 as u32);
+        assert_eq!(part1(0, 0), 4);
 
         // ROCK vs. PAPER as a WIN 
-        assert_eq!(part1(0 as i8, 1 as i8), 8 as u32);
+        assert_eq!(part1(0, 1), 8);
         
         // ROCK vs. SCISSORS as a LOSS  
-        assert_eq!(part1(0 as i8, 2 as i8), 3 as u32);
+        assert_eq!(part1(0, 2), 3);
        
         // SCISSORS vs. ROCK as a WIN
-        assert_eq!(part1(2 as i8, 0 as i8), 7 as u32);
+        assert_eq!(part1(2, 0), 7);
     }
 
     #[test]
     fn test_part2() {
         // ROCK and TIE with ROCK
-        assert_eq!(part2(0 as i8, 1 as i8), 4 as u32); 
+        assert_eq!(part2(0, 1), 4); 
 
         // ROCK and WIN with PAPER
-        assert_eq!(part2(0 as i8, 2 as i8), 8 as u32); 
+        assert_eq!(part2(0, 2), 8); 
 
         // ROCK and LOSS with SCISSORS 
-        assert_eq!(part2(0 as i8, 0 as i8), 3 as u32); 
+        assert_eq!(part2(0, 0), 3); 
 
         // PAPER and WIN with SCISSORS  
-        assert_eq!(part2(1 as i8, 2 as i8), 9 as u32); 
+        assert_eq!(part2(1, 2), 9); 
     }
 }

@@ -7,7 +7,7 @@ fn calculator(content: Vec<String>) -> Vec<i32> {
     for line in content {
         if !line.is_empty() {
             let num:i32 = line.parse().unwrap();
-            count = count + num; 
+            count += num; 
         } else {
             totals.push(count);
             count = 0;
